@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1">
+		<!-- Google Chrome Frame也可以让IE用上Chrome的引擎: -->
+		<meta name="renderer" content="webkit">
+		<!--国产浏览器高速模式-->
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="author" content="乐山水" />
+		<!-- 作者 -->
+		<meta name="revised" content="乐山水.v3, 2019/11/26" />
+		<!-- 定义页面的最新版本 -->
+		<meta name="description" content="网站简介" />
+		<!-- 网站简介 -->
+		<meta name="keywords" content="搜索关键字，以半角英文逗号隔开" />
+		<title>乐山水出品</title>
+
+		<!-- 公共样式 开始 -->
+		<link rel="stylesheet" type="text/css" href="/css/manage/base.css">
+		<link rel="stylesheet" type="text/css" href="/css/manage/iconfont.css">
+		<script type="text/javascript" src="/js/manage/framework/jquery-1.11.3.min.js"></script>
+		<link rel="stylesheet" type="text/css" href="/layui/css/layui.css">
+		<style>
+			.layui-table-cell {
+				text-align: center;
+			}
+			.my-form {
+				margin-top: 5%;
+			}
+			.item{
+				margin-left: 130px;
+			}
+			.my-form-item{
+				padding-top: 20px;
+			}
+		</style>
+		<script type="text/javascript" src="/layui/layui.js"></script>
+		<!-- 滚动条插件 -->
+		<link rel="stylesheet" type="text/css" href="/css/manage/jquery.mCustomScrollbar.css">
+		<script src="/js/manage/framework/jquery-ui-1.10.4.min.js"></script>
+		<script src="/js/manage/framework/jquery.mousewheel.min.js"></script>
+		<script src="/js/manage/framework/jquery.mCustomScrollbar.min.js"></script>
+		<script src="/js/manage/framework/cframe.js"></script><!-- 仅供所有子页面使用 -->
+		<!-- 公共样式 结束 -->
+
+	</head>
+
+	<body>
+	<table class="layui-hide" id="test" lay-filter="test"></table>
+
+
+	<div id="add-main" style="display: none;">
+		<div class="my-form">
+			<form class="layui-form" action="/user/add" method="POST" lay-skin="line">
+				<div class="layui-form-item my-form-item">
+					<label class="layui-form-label layui-icon">&#xe770;</label>
+					<div class="layui-input-inline">
+						<input type="text" name="name" lay-verify="required" placeholder="请输入用户名" autocomplete="off"
+							   class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item my-form-item">
+					<label class="layui-form-label layui-icon">&#xe673;</label>
+					<div class="layui-input-inline">
+						<input type="text" name="password" lay-verify="required" placeholder="请输入密码" autocomplete="off"
+							   class="layui-input">
+					</div>
+				</div>
+				<div class="layui-form-item my-form-item">
+					<div class="layui-input-block item">
+						<button class="layui-btn" lay-submit="" lay-filter="demo1" id="submit1">保存</button>
+						<button type="reset" class="layui-btn layui-btn-primary">重置</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<script type="text/html" id="toolbarDemo">
+
+		<div class="layui-btn-container">
+			<button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+			<button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+			<button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+			<button class="layui-btn layui-btn-sm layui-icon" lay-event="add">&#xe654;</button>
+			<button class="layui-btn layui-btn-sm layui-icon" lay-event="batchDel">&#xe640;</button>
+			<div class="layui-btn layui-btn-sm">
+				<input type="text" name="search">
+			</div>
+			<button class="layui-btn layui-btn-sm layui-icon" lay-event="search">&#xe615;</button>
+			<button class="layui-btn layui-btn-sm layui-icon" lay-event="flush">&#xe669;</button>
+		</div>
+	</script>
+
+	<script type="text/html" id="barDemo">
+		<a class="layui-btn layui-btn-danger layui-btn-xs layui-icon" lay-event="del">&#xe640;</a>
+		<a class="layui-btn layui-btn-danger layui-btn-xs layui-icon" lay-event="edit">&#xe642;</a>
+
+	</script>
+	<script>
+		layui.use(['table', 'layer'], function () {
+			var table = layui.table,
+					layer = layui.layer;
+			var $ = layui.$;
+
+			table.render({
+				url: "/manage/article/list"   //换成自己的url
+				,page: true  //开启分页
+				,limits: [10,20,50]  //每页条数的选择项，默认：[10,20,30,40,50,60,70,80,90]。
+				,limit: 10 //每页默认显示的数量
+				,method:'post'  //提交方式
+				, elem: '#test'
+				, toolbar: '#toolbarDemo'
+				, title: '文章列表'
+				, cols: [
+					[
+						{type: 'checkbox', fixed: 'left'}
+						, {field: 'id', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true}
+						, {field: 'title', title: '标题', width: 120, edit: 'text'}
+						, {field: 'authName', title: '作者', width: 250}
+						, {field: 'keyword', title: '关键词', width: 120, edit: 'text'}
+						, {field: 'hits', title: '点击量', width: 120, edit: 'text'}
+						, {
+						field: 'publishTime', title: '更新时间', minwidth: 80, sort: true, templet: function (d) {
+							return d.publishTime;
+						}
+
+					}
+						, {fixed: 'right', title: '操作', toolbar: '#barDemo', width: 150}
+					]
+				]
+			});
+
+			//头工具栏事件
+			table.on('toolbar(test)', function (obj) {
+				var checkStatus = table.checkStatus(obj.config.id);
+				switch (obj.event) {
+					case 'getCheckData':
+						var data = checkStatus.data;
+						layer.alert(JSON.stringify(data));
+						break;
+					case 'getCheckLength':
+						var data = checkStatus.data;
+						layer.msg('选中了：' + data.length + ' 个');
+						break;
+					case 'isAll':
+						layer.msg(checkStatus.isAll ? '全选' : '未全选');
+						break;
+					case 'add':
+						window.location.href="/manage/tgls/article/article_add.html";
+						break;
+					case
+					'batchDel'
+					:
+						/*发送ajax请求到后台执行批量删除*/
+							alert("批量删除，找死");
+						break;
+					case
+					'flush'
+					:
+						table.reload('test', {
+							url: "/manage/article/list"
+							, method: "GET"
+						});
+						break;
+					case
+					'search'
+					:
+						layer.msg("根据用户名查找");
+						var name = $('input[name="search"]').val();
+						table.reload('test', {
+							url: 'user/search',    //换成自己的url
+							where: {
+								name: name,
+							},
+							page: {
+								curr: 1
+							}
+						});
+						break;
+				}
+				;
+			});
+
+			//监听单元格编辑
+			table.on('edit(test)', function (obj) {
+				var value = obj.value //得到修改后的值
+						, data = obj.data //得到所在行所有键值
+						, field = obj.field; //得到字段
+
+				$.ajax({
+					url: '/user/update',      //换成自己的url
+					type: 'POST',
+					dataType: 'json',
+					data: data,
+					success: function (e) {
+						if (e.code == 0) {
+							layer.msg(e.msg);
+						} else {
+							layer.msg(e.msg);
+						}
+					},
+					error: function (e) {
+						layer.msg(e);
+					}
+				})
+			});
+
+			//监听行工具事件
+			table.on('tool(test)', function (obj) {
+				var data = obj.data;
+				if (obj.event === 'del') {
+					layer.confirm('真的删除行么', function (index) {
+						obj.del();
+						layer.close(index);
+						alert('不支持，不实现');
+						/*$.ajax({
+							url: "/manage/article/del",    //换成自己的url
+							type: "get",
+							dataType: "json",
+							data: {
+								id: data.id
+							},
+							success: function (e) {
+								if (e.code == 0) {
+									layer.msg(e.msg);
+								} else {
+									layer.msg(e.msg);
+								}
+							},
+							error: function (e) {
+								layer.msg(e);
+							}
+						})*/
+					});
+				} else if (obj.event == 'edit') {
+					window.location.href="/manage/tgls/article/article_add.html?id="+data.id;
+				}
+			});
+		})
+	</script>
+	</body>
+
+</html>

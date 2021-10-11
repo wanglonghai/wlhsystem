@@ -1,0 +1,24 @@
+##thymeleaf页面模板配置
+spring:
+  profiles:
+    active: dev
+  mvc:
+    view:
+      prefix: /
+      suffix: .html
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/, file:${webappfile.articleImagePath}
+mybatis:
+  type-aliases-package: com.wanglonghai.wlhsystem.entity
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    #开启驼峰式
+    mapUnderscoreToCamelCase: true
+logging:
+  level:
+    org.springframework.web: INFO
+    com.jiachi: DEBUG
+  file: var/log/sample-boot-application.log
+  pattern:
+    file: clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(%5p) %clr(${PID}){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n%wEx
+

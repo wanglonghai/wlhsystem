@@ -1,0 +1,4 @@
+﻿start with logpath：启动并指定日志路径
+nohup java -jar wlhsystem-0.0.1-SNAPSHOT.jar --spring.profiles.active=prod  &>wlhsystem-1.0.out &
+start with debug：调试启动
+nohup java -Xdebug -Xrunjdwp:transport=dt_socket,address=5005,server=y,suspend=y -jar g-houseresource.jar &>g-houseresource.out &

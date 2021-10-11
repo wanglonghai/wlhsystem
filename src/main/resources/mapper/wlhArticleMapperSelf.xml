@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.wanglonghai.wlhsystem.dao.WlhArticleMapperSelf">
+  <resultMap id="BaseResultMap" type="com.wanglonghai.wlhsystem.entity.WlhArticle">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="auth_name" jdbcType="VARCHAR" property="authName" />
+    <result column="logo_picurl" jdbcType="VARCHAR" property="logoPicurl" />
+    <result column="publish_time" jdbcType="TIMESTAMP" property="publishTime" />
+    <result column="keyword" jdbcType="VARCHAR" property="keyword" />
+    <result column="hits" jdbcType="INTEGER" property="hits" />
+  </resultMap>
+  <resultMap extends="BaseResultMap" id="ResultMapWithBLOBs" type="com.wanglonghai.wlhsystem.entity.WlhArticle">
+    <result column="content" jdbcType="LONGVARCHAR" property="content" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, title, auth_name, logo_picurl, publish_time, keyword, hits
+  </sql>
+  <sql id="Blob_Column_List">
+    content
+  </sql>
+
+  <sql id="paramsArticle">
+    <where>
+      AND 1=1
+      <if test="beginPublishTime != null and beginPublishTime != ''">
+        and t.publish_time &gt;= #{beginPublishTime}
+      </if>
+      <if test="endPublishTime != null and endPublishTime != ''">
+        and t.publish_time &lt;= #{endPublishTime}
+      </if>
+      <if test="title != null and title != ''">
+        and t.title = #{title}
+      </if>
+    </where>
+  </sql>
+  <select id="countByParams" resultType="int">
+    select count(1) from wlh_article
+    <include refid="paramsArticle"></include>
+  </select>
+  <select id="selectByParams" parameterType="com.wanglonghai.wlhsystem.entity.vo.WlhArticleDto" resultMap="ResultMapWithBLOBs">
+    SELECT
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    FROM
+    wlh_article t
+    <include refid="paramsArticle"></include>
+    <if test="orderBy != null and orderBy != ''">
+      order by t.${orderBy}
+    </if>
+    <if test="orderBy == null or orderBy == ''">
+      order by t.id desc
+    </if>
+    <if test="offset!=null  and pageSize!=null ">
+      limit #{offset}, #{pageSize}
+    </if>
+  </select>
+</mapper>
